@@ -5,7 +5,7 @@ import React from 'react';
 // }
 
 const App = () => {
-  return <h1>Welcome to Clontagram...</h1>
+  return <h1>Welcome to Clontagram at GitHub...</h1>
 }
 
 export default App
