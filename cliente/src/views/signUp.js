@@ -4,7 +4,7 @@ import imagenSignUp from '../imagenes/signup.png'
 import axios from 'axios'
 
 
-const SignUp = () => {
+const SignUp = ({ signUp }) => {
 
     const [ user, setUser ] = useState({
         email: '',
@@ -29,28 +29,13 @@ const handleOnSubmit = async(e) => {
     e.preventDefault()
     
     try {
-        const { data } = await axios.post('/api/usuarios/signup', user)
-        console.log(data)
+        signUp(user)
+        // const { data } = await axios.post('/api/usuarios/signup', user)
+        // console.log(data)
 
-    } catch(e){
-
+    } catch(error){
+        console.log(error)
     }
-    
-    // ************* this method works properly
-    // await fetch('/api/usuarios/signup', {
-    //     method:'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(user)
-    // })
-    // .then(res =>{
-    //     console.log(res)
-    //     if (res.status === 200){
-    //         alert('User has been created successfully...')
-    //     }
-    // })
-
 
 }
 
