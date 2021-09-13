@@ -1,11 +1,11 @@
 import React, {useState} from 'react'
 import Main from '../components/main'
-import axios from 'axios'
-import { setToken } from '../helpers/auth-helpers'
+import { Link } from 'react-router-dom'
 
 
 
-const Login = ({ login }) => {
+
+const Login = ({ login, showError }) => {
 
     const [ credentials, setCredentials ] = useState({
         email: '',
@@ -26,9 +26,10 @@ const Login = ({ login }) => {
         e.preventDefault()
         
         try {
-            login(credentials.email, credentials.password)
+            await login(credentials.email, credentials.password)
         } catch(error){
-            console.log(error)
+            showError(error.response.data)
+            // console.log(error)
         }
           
     }
@@ -36,7 +37,6 @@ const Login = ({ login }) => {
     return (
             <Main center={ true }>
                <div className="Signup">
-                   {/* <img src={imagenSignUp} alt="" className="Signup__img" /> */}
                    <div className="FormContainer">
                        <h1 className="Form__titulo">Clontagram</h1>
                        <div>
@@ -56,7 +56,8 @@ const Login = ({ login }) => {
                             <input
                             onChange={ (e) => handleInputChange(e)} 
                             className="Form__field" 
-                            type="password" 
+                            type="password"
+                            autoComplete="on" 
                             name="password" 
                             placeholder="password"
                             required
@@ -68,7 +69,7 @@ const Login = ({ login }) => {
                             <p 
                             className="FormContainer__info">
                              Do you wanna have an account with us?
-                             <a href="/login">Register</a>
+                             <Link to="/signup">Register</Link>
                              </p>
                         </form>
                        </div>

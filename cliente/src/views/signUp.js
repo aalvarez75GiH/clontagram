@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import Main from '../components/main'
 import imagenSignUp from '../imagenes/signup.png'
-import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 
-const SignUp = ({ signUp }) => {
+const SignUp = ({ signUp, showError }) => {
 
     const [ user, setUser ] = useState({
         email: '',
@@ -29,12 +29,9 @@ const handleOnSubmit = async(e) => {
     e.preventDefault()
     
     try {
-        signUp(user)
-        // const { data } = await axios.post('/api/usuarios/signup', user)
-        // console.log(data)
-
+        await signUp(user)
     } catch(error){
-        console.log(error)
+        showError(error.response.data)
     }
 
 }
@@ -97,7 +94,8 @@ const handleOnSubmit = async(e) => {
                        <input
                        onChange={ (e) => handleInputChange(e)} 
                        className="Form__field" 
-                       type="password" 
+                       type="password"
+                       autoComplete="on" 
                        name="password" 
                        placeholder="password"
                        required
@@ -109,7 +107,7 @@ const handleOnSubmit = async(e) => {
                        <p 
                        className="FormContainer__info">
                         already have an account?
-                        <a href="/login">Login</a>
+                        <Link to="/login">Login</Link>
                         </p>
                    </form>
 
