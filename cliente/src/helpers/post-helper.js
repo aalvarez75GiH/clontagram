@@ -28,13 +28,13 @@ export const toggleLike = async(post) => {
     return postChanged
 }
 
-export const addingComment = async(post, comment, usuario) => {
+export const addingComment = async(post, comment, user) => {
     const url_comment = `/api/posts/${post._id}/comentarios`
     const { data: nuevoComentario } = await axios.post(url_comment, {
         mensaje: comment
     })
     console.log(nuevoComentario)
-    nuevoComentario.usuario = usuario
+    nuevoComentario.usuario = user
     
     const postChanged = {
         ...post,

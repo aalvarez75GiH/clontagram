@@ -12,7 +12,7 @@ const loadingPosts = async(dateLastPost) => {
     return nuevosPosts
 }
 
-const Feed = ({ showError, usuario }) => {
+const Feed = ({ showError, user }) => {
 
     const [ posts, setPosts ] = useState([])
     const [loadingInitialPosts, setLoadingInitialPosts] = useState(true)
@@ -60,7 +60,7 @@ const Feed = ({ showError, usuario }) => {
             post={ post }
             updatePost={ updatePost }
             showError = { showError }
-            usuario={ usuario }
+            user={ user }
             
             />
         ) 

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import CommentForm from './commentForm'
 import { toggleLike, addingComment } from '../helpers/post-helper'
 
-const Post = ({ post, updatePost, showError, usuario }) => {
+const Post = ({ post, updatePost, showError, user }) => {
     
     const {
         numLikes,
@@ -14,7 +14,7 @@ const Post = ({ post, updatePost, showError, usuario }) => {
         _id,
         caption,
         url,
-        usuario: usuarioDelPost,
+        usuario,
         estaLike,
     } = post
 
@@ -42,13 +42,13 @@ const Post = ({ post, updatePost, showError, usuario }) => {
 
     const onSubmitComment = async(comment) => {
         console.log(comment) 
-        const updatedPost = await addingComment(post, comment, usuario)
+        const updatedPost = await addingComment(post, comment, user)
         updatePost(post, updatedPost)
     }
 
     return (
         <div className="Post-Componente">
-            <Avatar user={usuario}/>
+            <Avatar user={user}/>
             <img src={url} alt={caption} />
             <div className="Post-Componente__acciones">
                 <div className="Post-Componente__like-container">
@@ -57,8 +57,8 @@ const Post = ({ post, updatePost, showError, usuario }) => {
                 <p>Liked for { numLikes } people</p>
                 <ul>
                     <li>
-                        <Link to={`/profile/${usuarioDelPost.username}`}>
-                            <b>{usuarioDelPost.username}</b> 
+                        <Link to={`/profile/${usuario.username}`}>
+                            <b>{usuario.username}</b> 
                         </Link> {' '}
                         { caption }                        
                     </li>
