@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import CommentForm from './commentForm'
 import { toggleLike } from '../helpers/post-helper'
 
-
 const Post = ({ post, updatePost }) => {
     
     const {
@@ -22,6 +21,7 @@ const Post = ({ post, updatePost }) => {
     const [sendingLike,setSendingLike] = useState(false)
 
  
+   
     const onSubmitLike = async(e) => {
         e.preventDefault()
         
@@ -38,8 +38,8 @@ const Post = ({ post, updatePost }) => {
             console.log(error)
         }
 
-    }
 
+    }
 
     return (
         <div className="Post-Componente">
