@@ -3,9 +3,10 @@ import Avatar from './avatar'
 import LikeButton from './likeButton'
 import { Link } from 'react-router-dom'
 import CommentForm from './commentForm'
+import { toggleLike } from '../helpers/post-helper'
 
 
-const Post = ({ post, updatePost, showError }) => {
+const Post = ({ post, updatePost }) => {
     
     const {
         numLikes,
@@ -17,10 +18,25 @@ const Post = ({ post, updatePost, showError }) => {
         usuario,
         estaLike,
     } = post
+
+    const [sendingLike,setSendingLike] = useState(false)
+
  
-    const onSubmitLike = (e) => {
+    const onSubmitLike = async(e) => {
         e.preventDefault()
-        console.log('They Like me...')
+        
+        if (sendingLike){
+            return
+        }
+
+        try {
+            setSendingLike(true)
+            const updatedPost = await toggleLike(post)
+            updatePost(post,updatedPost)
+            setSendingLike(false)
+        } catch (error) {
+            console.log(error)
+        }
 
     }
 
@@ -45,7 +61,7 @@ const Post = ({ post, updatePost, showError }) => {
                     <SomeComments comentarios={ comentarios }/>
                 </ul>
             </div>
-            <CommentForm showError={showError}/>
+            <CommentForm />
         </div>    
     )
 }
@@ -71,7 +87,7 @@ const SomeComments = ({ comentarios }) => {
 
     return comentarios.map((comentario)=> {
         return(
-            <li>
+            <li key={comentario._id}>
                 <Link to={`/profile/${comentario.usuario.username}`}>
                     {<b>{comentario.usuario.username}</b>}
                 </Link>{' '}

@@ -20,12 +20,12 @@ const Feed = ({ showError }) => {
     useEffect(()=> {
         const initialLoad = async()=> {
             try {
-                // setTimeout(async()=> {
+                setTimeout(async()=> {
                     const newPosts = await loadingPosts()
                     setPosts(newPosts)
                     console.log(newPosts)
                     setLoadingInitialPosts(false)
-                // },2000)
+                 },2000)
             } catch (error) {
                 showError('We are having issues to load the Feed...')
                 console.log(error)
@@ -34,14 +34,28 @@ const Feed = ({ showError }) => {
         
         initialLoad()
             
-    },[])
+    },[showError])
     
 
+    const updatePost = (originalPost, updatedPost ) => {
+        setPosts((posts)=> {
+            const updatedPosts = posts.map((post)=> {
+                if (post !== originalPost){
+                    return post
+                }
+                return updatedPost
+            })
+            return updatedPosts
+        })
+    }
+    
     const postsList = posts.map((post)=> {
         return(
             <Post 
             key={post._id} 
-            post={ post }/>
+            post={ post }
+            updatePost={ updatePost }
+            />
         ) 
     })
     
@@ -67,7 +81,6 @@ const Feed = ({ showError }) => {
         <Main center>
             <div className="Feed">
                 { postsList }
-                {/* {JSON.stringify(posts)} */}
             </div>
         </Main>
         
