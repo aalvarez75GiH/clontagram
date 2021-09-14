@@ -3,9 +3,9 @@ import Avatar from './avatar'
 import LikeButton from './likeButton'
 import { Link } from 'react-router-dom'
 import CommentForm from './commentForm'
-import { toggleLike } from '../helpers/post-helper'
+import { toggleLike, addingComment } from '../helpers/post-helper'
 
-const Post = ({ post, updatePost }) => {
+const Post = ({ post, updatePost, showError, usuario }) => {
     
     const {
         numLikes,
@@ -14,12 +14,12 @@ const Post = ({ post, updatePost }) => {
         _id,
         caption,
         url,
-        usuario,
+        usuario: usuarioDelPost,
         estaLike,
     } = post
 
     const [sendingLike,setSendingLike] = useState(false)
-
+    
  
    
     const onSubmitLike = async(e) => {
@@ -37,8 +37,13 @@ const Post = ({ post, updatePost }) => {
         } catch (error) {
             console.log(error)
         }
+    }
 
 
+    const onSubmitComment = async(comment) => {
+        console.log(comment) 
+        const updatedPost = await addingComment(post, comment, usuario)
+        updatePost(post, updatedPost)
     }
 
     return (
@@ -52,8 +57,8 @@ const Post = ({ post, updatePost }) => {
                 <p>Liked for { numLikes } people</p>
                 <ul>
                     <li>
-                        <Link to={`/profile/${usuario.username}`}>
-                            <b>{usuario.username}</b> 
+                        <Link to={`/profile/${usuarioDelPost.username}`}>
+                            <b>{usuarioDelPost.username}</b> 
                         </Link> {' '}
                         { caption }                        
                     </li>
@@ -61,7 +66,10 @@ const Post = ({ post, updatePost }) => {
                     <SomeComments comentarios={ comentarios }/>
                 </ul>
             </div>
-            <CommentForm />
+            <CommentForm  
+            showError={ showError }
+            onSubmitComment = { onSubmitComment }
+            />
         </div>    
     )
 }

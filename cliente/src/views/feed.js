@@ -12,7 +12,7 @@ const loadingPosts = async(dateLastPost) => {
     return nuevosPosts
 }
 
-const Feed = ({ showError }) => {
+const Feed = ({ showError, usuario }) => {
 
     const [ posts, setPosts ] = useState([])
     const [loadingInitialPosts, setLoadingInitialPosts] = useState(true)
@@ -48,13 +48,20 @@ const Feed = ({ showError }) => {
             return updatedPosts
         })
     }
+
+    // const updateComment = ( originalPost, updatedPost )=>{
+
+    // }
     
     const postsList = posts.map((post)=> {
         return(
             <Post 
-            key={post._id} 
+            key={post._id}
             post={ post }
             updatePost={ updatePost }
+            showError = { showError }
+            usuario={ usuario }
+            
             />
         ) 
     })

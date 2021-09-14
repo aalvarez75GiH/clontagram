@@ -86,15 +86,14 @@ return (
     <React.Fragment>
         <Nav user={ user } />
         <Error message={error} hideError={hideError}/>
-        { user ? <LoginRoutes showError={showError}/> : <LogoutRoutes login={login} signUp={signUp} showError={showError} />}
-        {/* <div>{ JSON.stringify(user) }</div> */}
+        { user ? <LoginRoutes showError={showError} usuario={ user }/> : <LogoutRoutes login={login} signUp={signUp} showError={showError} />}
     </React.Fragment>
   </Router>
 )
 
 }
 
-const LoginRoutes = ({showError}) => {
+const LoginRoutes = ({showError, usuario}) => {
   return (    
       <Switch>
         <Route 
@@ -107,7 +106,7 @@ const LoginRoutes = ({showError}) => {
         
         <Route 
         path="/" 
-        render={ props => <Feed { ...props } showError={ showError }/>} default/>  
+        render={ props => <Feed { ...props } showError={ showError } usuario={ usuario } />} default/>  
       
       </Switch>
   )

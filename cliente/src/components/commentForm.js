@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
 
-const CommentForm = ({ showError }) => {
+const CommentForm = ({ showError, onSubmitComment }) => {
     
     const [comment, setComment] = useState('')
+    
     
     const handleInputChange = (e) => {
         e.preventDefault()
         setComment(e.target.value)
         console.log(e.target.value)
     }
-    
-    const onSubmitComment = (e) => {
+
+    const handlingComment = (e) => {
         e.preventDefault()
-        console.log('Yo have submitted your comment...')
-    }
+        onSubmitComment(comment)
+    } 
+    
     
     return (
         <div>
@@ -28,7 +30,9 @@ const CommentForm = ({ showError }) => {
                     value={comment}
                     maxLength="180"
                     />
-                    <button type="submit">Post</button>  
+                    <button
+                    onClick={(e) => handlingComment(e) } 
+                    type="submit">Post</button>  
             </form>
         </div>
     )
