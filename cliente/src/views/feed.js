@@ -4,6 +4,7 @@ import axios from 'axios'
 import Loading from '../components/loading'
 import NoPosts from './noPosts'
 import Post from '../components/post'
+import LoadMore from '../components/loadMore'
 
 
 const loadingPosts = async(dateLastPost) => {
@@ -15,7 +16,10 @@ const loadingPosts = async(dateLastPost) => {
 const Feed = ({ showError, user }) => {
 
     const [ posts, setPosts ] = useState([])
-    const [loadingInitialPosts, setLoadingInitialPosts] = useState(true)
+    const [ loadingInitialPosts, setLoadingInitialPosts ] = useState(true)
+    const [ loadingMore, setLoadingMore ] = useState(false)
+    const [ allPostsLoaded, setAllPostsLoaded ] = useState(false) 
+    const MAX_AMOUNT_POSTS_BY_LOAD = 3
     
     useEffect(()=> {
         const initialLoad = async()=> {
@@ -23,8 +27,8 @@ const Feed = ({ showError, user }) => {
                 setTimeout(async()=> {
                     const newPosts = await loadingPosts()
                     setPosts(newPosts)
-                    console.log(newPosts)
                     setLoadingInitialPosts(false)
+                    lookingForMorePosts(newPosts)
                  },2000)
             } catch (error) {
                 showError('We are having issues to load the Feed...')
@@ -48,21 +52,46 @@ const Feed = ({ showError, user }) => {
             return updatedPosts
         })
     }
-
-    // const updateComment = ( originalPost, updatedPost )=>{
-
-    // }
     
+
+    const handleMorePosts = async(e) => {
+        
+        if (loadingMore){
+            return
+        }
+
+        try {
+            setLoadingMore(true)
+            const dateLastPost = posts[posts.length-1].fecha_creado
+            const newPosts = await loadingPosts(dateLastPost)
+            setPosts( posts => [...posts, ...newPosts])
+            setLoadingMore(false)
+            lookingForMorePosts(newPosts)            
+        } catch (error) {
+            showError('We are having some problems to load more posts...')
+            setLoadingMore(false) 
+        }
+    }
+
+    const lookingForMorePosts = (newPosts) => {
+        if (newPosts.length < MAX_AMOUNT_POSTS_BY_LOAD){
+            setAllPostsLoaded(true)
+            console.log('There are no more posts...')
+        }
+    }
+
+
     const postsList = posts.map((post)=> {
         return(
-            <Post 
-            key={post._id}
-            post={ post }
-            updatePost={ updatePost }
-            showError = { showError }
-            user={ user }
-            
-            />
+            <React.Fragment>
+                <Post 
+                key={post._id}
+                post={ post }
+                updatePost={ updatePost }
+                showError = { showError }
+                user={ user }
+                />
+            </React.Fragment>
         ) 
     })
     
@@ -88,6 +117,11 @@ const Feed = ({ showError, user }) => {
         <Main center>
             <div className="Feed">
                 { postsList }
+                <LoadMore 
+                onClick={(e) => handleMorePosts(e)}
+                showError={showError}
+                isLoad={ allPostsLoaded }
+                />
             </div>
         </Main>
         

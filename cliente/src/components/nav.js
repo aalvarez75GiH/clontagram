@@ -27,6 +27,7 @@ const LoginRoutes = () => {
                 <Link to="/upload" className="Nav__link">
                     <FontAwesomeIcon className="Nav__icon" icon={faCameraRetro}/>
                 </Link>
+            
             </li>
         </React.Fragment>
     )
