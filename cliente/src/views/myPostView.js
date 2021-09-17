@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import Main from '../components/main'
-// import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
  import Loading from '../components/loading'
 import Avatar from '../components/avatar'
 import CommentForm from '../components/commentForm'
 import LikeButton from '../components/likeButton'
 import axios from 'axios'
-import { addingComment } from '../helpers/post-helper'
+import { addingComment, toggleLike } from '../helpers/post-helper'
+import Comments from '../components/comments'
 
 
-const MyPostView = ({ showError, match }) => {
+const MyPostView = ({ showError, match, user }) => {
     
     const postID = match.params.id
     const [ postView, setPostView ] = useState(null)
     const [ loading, setLoading ] = useState(true)
     const [ postDoNotExist, setPostDoNotExist ] = useState(false)
+    const [ sendingLike, setSendingLike ] = useState(false)
     
 
     useEffect(()=>{
@@ -45,13 +47,34 @@ const MyPostView = ({ showError, match }) => {
         gettingData() 
     },[postID, showError])
 
+    const renderingPost = async() => {
+        const { data: post }  = await axios.get(`/api/posts/${postID}`)
+        setPostView(post)
+    }
 
     const onSubmitComment = async(comment) => {
         console.log(comment) 
-        const updatedPost = await addingComment(postView, comment, postView.usuario)
-        // updatePost(post, updatedPost)
+        await addingComment(postView, comment, user)
+        renderingPost()
     }
 
+      
+    const onSubmitLike = async(e) => {
+        e.preventDefault()
+        
+        if (sendingLike){
+            return
+        }
+
+        try {
+            setSendingLike(true)
+            const updatedPost = await toggleLike(postView)
+            renderingPost()
+            setSendingLike(false)
+        } catch (error) {
+            console.log(error)
+        }
+    }
  
     if (loading) {
         return(
@@ -79,9 +102,20 @@ const MyPostView = ({ showError, match }) => {
                 <div className="Post__side-bar" >
                     <Avatar user={postView.usuario}/>
                     <div className="Post__comentarios-y-like">
-                        componente1
+                        <div className="Post-Componente__acciones">
+                            <ul>
+                                <li>
+                                    <Link to={`/profile/${postView.usuario.username}`}>
+                                        <b>{postView.usuario.username}</b> 
+                                    </Link> {' '}
+                                    { postView.caption }                        
+                                </li>
+                                <Comments id={ postID } showError={showError}/>
+                                {/* <SomeComments comentarios={ postView.comentarios }/> */}
+                            </ul>
+                        </div>
                         <div className="Post__like">
-                            <LikeButton estaLike={postView.estaLike}/>
+                            <LikeButton estaLike={postView.estaLike} onSubmitLike={onSubmitLike}/>
                         </div>
                         <CommentForm
                         onSubmitComment={ onSubmitComment }
@@ -96,50 +130,24 @@ const MyPostView = ({ showError, match }) => {
     )
 }
 
+
+
+const SomeComments = ({ comentarios }) => {
+    if (comentarios.length === 0){
+        return null
+    }
+
+    return comentarios.map((comentario)=> {
+        return(
+            <li key={comentario._id}>
+                <Link to={`/profile/${comentario.usuario.username}`}>
+                    {<b>{comentario.usuario.username}</b>}
+                </Link>{' '}
+                { comentario.mensaje }
+            </li>
+        )
+    })
+}
+
 export default MyPostView
 
-{/* <div className="Post-Componente">
-            <Avatar user={user}/>
-            <img src={url} alt={caption} />
-            <div className="Post-Componente__acciones">
-                <div className="Post-Componente__like-container">
-                    <LikeButton estaLike={estaLike} onSubmitLike={(e)=> onSubmitLike(e)}/>
-                </div>
-                <p>Liked for { numLikes } people</p>
-                <ul>
-                    <li>
-                        <Link to={`/profile/${usuario.username}`}>
-                            <b>{usuario.username}</b> 
-                        </Link> {' '}
-                        { caption }                        
-                    </li>
-                    <AllComments _id={_id} numComentarios={ numComentarios } />
-                    <SomeComments comentarios={ comentarios }/>
-                </ul>
-            </div>
-            <CommentForm  
-            showError={ showError }
-            onSubmitComment = { onSubmitComment }
-            />
-        </div>     */}
-
-        // <div className="Post">
-        // +      <div className="Post__image-container">
-        // +        <img src={url} alt={caption} />
-        // +      </div>
-        // +      <div className="Post__side-bar">
-        // +        <Avatar usuario={usuario} />
-        // +
-        // +        <div className="Post__comentarios-y-like">
-        // +          <Comentarios
-        // +            usuario={usuario}
-        // +            caption={caption}
-        // +            comentarios={comentarios}
-        // +          />
-        // +          <div className="Post__like">
-        // +            <BotonLike onSubmitLike={onSubmitLike} like={estaLike} />
-        // +          </div>
-        // +          <Comentar onSubmitComentario={onSubmitComentario} />
-        // +        </div>
-        // +      </div>
-        // </div>
