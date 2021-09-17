@@ -17,15 +17,14 @@ const PostView = ({ showError, match }) => {
 
     useEffect(()=>{
         const gettingData = async() => {           
-            try {
-                setTimeout(async()=> {
+            setTimeout(async()=> {
+                try {
+                
                     setLoading(true)
                     const { data: post }  = await axios.get(`/api/posts/${postID}`)
                     console.log(post)
                     setPostView(post)
                     setLoading(false)
-                    throw new Error('error!')
-                },2000)
             } catch (error) {
                 // if (error.response.status){
                 //     console.log(error.response.status)
@@ -38,6 +37,7 @@ const PostView = ({ showError, match }) => {
                 }
                 setLoading(false)
             }
+            },2000)
         }
         gettingData() 
     },[postID, showError])
