@@ -109,11 +109,5 @@ const SomeComments = ({ comentarios }) => {
 }
 
 
-
-
-
-
-
-
 export default Post
 

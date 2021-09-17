@@ -13,6 +13,7 @@ import SignUp from './views/signUp'
 import Feed from './views/feed'
 import Upload from './views/upload'
 import Explore from './views/explore'
+import PostView from './views/postView'
 
 initAxiosInterceptors()
 
@@ -105,9 +106,13 @@ const LoginRoutes = ({showError, user}) => {
         render={ props => <Explore { ...props } showError={ showError }/>}/>
         
         <Route 
+        path="/post/:id" 
+        render={ props => <PostView { ...props } showError={ showError } />}/>
+        
+        <Route 
         path="/" 
-        render={ props => <Feed { ...props } showError={ showError } user={ user } />} default/>  
-      
+        render={ props => <Feed { ...props } showError={ showError } user={ user } />} default/>
+        
       </Switch>
   )
 }
