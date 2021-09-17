@@ -48,7 +48,7 @@ const Post = ({ post, updatePost, showError, user }) => {
 
     return (
         <div className="Post-Componente">
-            <Avatar user={user}/>
+            <Avatar user={usuario}/>
             <img src={url} alt={caption} />
             <div className="Post-Componente__acciones">
                 <div className="Post-Componente__like-container">
