@@ -3,24 +3,34 @@ import React, { useState } from 'react'
 const CommentForm = ({ showError, onSubmitComment }) => {
     
     const [comment, setComment] = useState('')
-    
+    const [sendingComment, setSendingComment] = useState(false)
     
     const handleInputChange = (e) => {
         e.preventDefault()
         setComment(e.target.value)
-        console.log(e.target.value)
     }
 
-    const handlingComment = (e) => {
+    const handlingComment = async(e) => {
         e.preventDefault()
-        onSubmitComment(comment)
+        if (sendingComment){
+            return
+        }
+        try {
+            setSendingComment(true)
+            await onSubmitComment(comment)
+            setComment(' ')
+            setSendingComment(false)
+        } catch (error) {
+            setSendingComment(false) 
+            showError('we had a problem posting your comment, try again later... ')
+        }
     } 
     
     
     return (
         <div>
             <form className="Post__comentario-form-container"
-            onSubmit={(e)=> onSubmitComment(e)}
+            onSubmit={(e)=> handlingComment(e)}
             >
                 <input
                     onChange={ (e) => handleInputChange(e)} 

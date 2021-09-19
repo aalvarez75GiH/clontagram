@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Main from '../components/main'
-import { Link } from 'react-router-dom'
 import Loading from '../components/loading'
 import Avatar from '../components/avatar'
 import CommentForm from '../components/commentForm'
@@ -8,13 +7,15 @@ import LikeButton from '../components/likeButton'
 import axios from 'axios'
 import DoNotExist from '../components/DoNotExist'
 import HisComments from '../components/hisComments'
+import { addingComment, toggleLike } from '../helpers/post-helper'
 
-const PostView = ({ showError, match }) => {
+const PostView = ({ showError, match, user }) => {
     
     const postID = match.params.id
     const [ postView, setPostView ] = useState(null)
     const [ loading, setLoading ] = useState(true)
     const [ postDoNotExist, setPostDoNotExist ] = useState(false)
+    const [ sendingLike, setSendingLike ] = useState(false)
 
     useEffect(()=>{
         const gettingData = async() => {           
@@ -42,6 +43,31 @@ const PostView = ({ showError, match }) => {
     },[postID, showError])
 
  
+    const onSubmitComment = async(comment) => {
+        const updatedPostWComment = await addingComment(postView, comment, user)
+        setPostView(updatedPostWComment)
+        // updatePost(post, updatedPost)
+    }
+   
+    const onSubmitLike = async(e) => {
+        e.preventDefault()
+        
+        if (sendingLike){
+            return
+        }
+
+        try {
+            setSendingLike(true)
+            const updatedPostWLike = await toggleLike(postView)
+            setPostView(updatedPostWLike)
+            setSendingLike(false)
+        } catch (error) {
+            setSendingLike(false)
+            showError('We could not work your like...')
+            console.log(error)
+        }
+    }
+
     if (loading) {
         return(
             <Main center>
@@ -60,7 +86,12 @@ const PostView = ({ showError, match }) => {
   
     return (
         <Main center>
-            <Post {...postView}/>
+            <Post 
+            {...postView}
+            showError={showError} 
+            onSubmitComment={ onSubmitComment }
+            onSubmitLike={ onSubmitLike }
+            />
         </Main>
         
     )

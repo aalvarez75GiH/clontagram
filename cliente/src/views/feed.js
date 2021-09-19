@@ -76,7 +76,6 @@ const Feed = ({ showError, user }) => {
     const lookingForMorePosts = (newPosts) => {
         if (newPosts.length < MAX_AMOUNT_POSTS_BY_LOAD){
             setAllPostsLoaded(true)
-            console.log('There are no more posts...')
         }
     }
 

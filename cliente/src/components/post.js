@@ -4,6 +4,7 @@ import LikeButton from './likeButton'
 import { Link } from 'react-router-dom'
 import CommentForm from './commentForm'
 import { toggleLike, addingComment } from '../helpers/post-helper'
+import Comments from './comments'
 
 const Post = ({ post, updatePost, showError, user }) => {
     
@@ -63,7 +64,8 @@ const Post = ({ post, updatePost, showError, user }) => {
                         { caption }                        
                     </li>
                     <AllComments _id={_id} numComentarios={ numComentarios } />
-                    <SomeComments comentarios={ comentarios }/>
+                    <Comments comments={ comentarios }/>
+                    {/* <SomeComments comentarios={ comentarios }/> */}
                 </ul>
             </div>
             <CommentForm  
@@ -87,27 +89,6 @@ const AllComments = ({ _id, numComentarios }) => {
     )
 
 }
-
-const SomeComments = ({ comentarios }) => {
-    if (comentarios.length === 0){
-        return null
-    }
-
-    return comentarios.map((comentario)=> {
-        return(
-            <li key={comentario._id}>
-                <Link to={`/profile/${comentario.usuario.username}`}>
-                    {<b>{comentario.usuario.username}</b>}
-                </Link>{' '}
-                { comentario.mensaje }
-            </li>
-        )
-    })
-
-
-
-}
-
 
 export default Post
 

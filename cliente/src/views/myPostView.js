@@ -17,6 +17,7 @@ const MyPostView = ({ showError, match, user }) => {
     const [ loading, setLoading ] = useState(true)
     const [ postDoNotExist, setPostDoNotExist ] = useState(false)
     const [ sendingLike, setSendingLike ] = useState(false)
+    const [ sendingComment, setSendingComment ] = useState(false)
     
 
     useEffect(()=>{
@@ -31,9 +32,6 @@ const MyPostView = ({ showError, match, user }) => {
                     setPostView(post)
                     setLoading(false)
             } catch (error) {
-                // if (error.response.status){
-                //     console.log(error.response.status)
-                // }
                 if (error.response && 
                     (error.response.status === 404 || error.response.status === 400)){
                     setPostDoNotExist(true)
@@ -47,15 +45,20 @@ const MyPostView = ({ showError, match, user }) => {
         gettingData() 
     },[postID, showError])
 
-    const renderingPost = async() => {
-        const { data: post }  = await axios.get(`/api/posts/${postID}`)
-        setPostView(post)
-    }
+    
 
     const onSubmitComment = async(comment) => {
-        console.log(comment) 
-        await addingComment(postView, comment, user)
-        renderingPost()
+        if (sendingComment){
+            return
+        }
+        try {
+            setSendingComment(true)
+            const postNewComment = await addingComment(postView, comment, user)
+            setPostView(postNewComment)
+            setSendingComment(false)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
       
@@ -69,7 +72,7 @@ const MyPostView = ({ showError, match, user }) => {
         try {
             setSendingLike(true)
             const updatedPost = await toggleLike(postView)
-            renderingPost()
+            setPostView(updatedPost)
             setSendingLike(false)
         } catch (error) {
             console.log(error)
@@ -110,8 +113,7 @@ const MyPostView = ({ showError, match, user }) => {
                                     </Link> {' '}
                                     { postView.caption }                        
                                 </li>
-                                <Comments id={ postID } showError={showError}/>
-                                {/* <SomeComments comentarios={ postView.comentarios }/> */}
+                                <Comments comments={ postView.comentarios } />
                             </ul>
                         </div>
                         <div className="Post__like">
@@ -130,24 +132,6 @@ const MyPostView = ({ showError, match, user }) => {
     )
 }
 
-
-
-const SomeComments = ({ comentarios }) => {
-    if (comentarios.length === 0){
-        return null
-    }
-
-    return comentarios.map((comentario)=> {
-        return(
-            <li key={comentario._id}>
-                <Link to={`/profile/${comentario.usuario.username}`}>
-                    {<b>{comentario.usuario.username}</b>}
-                </Link>{' '}
-                { comentario.mensaje }
-            </li>
-        )
-    })
-}
 
 export default MyPostView
 

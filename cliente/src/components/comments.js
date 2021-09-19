@@ -1,41 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React from 'react'
+
 import { Link } from 'react-router-dom'
 
 
-const Comments = ({ id, showError }) => {
-    const loadingComments = async() => {
-        const { data: allComments } = await axios.get(`/api/posts/${id}/comentarios`)
-        //const { data: allComments } = await axios.get(`/api/posts/all/comments`)
-        return allComments
-    }
-
-    const [ comments, setComments ] = useState([])
-    const [ loadingInitialComments, setLoadingInitialComments] = useState(true)
-
-    useEffect(()=> {
-        const initialLoad = async()=> {
-            try {
-                const newComments = await loadingComments()
-                setComments(newComments)
-                setLoadingInitialComments(false)
-            } catch (error) {
-                showError('We are having issues to load the Cooments...')
-                console.log(error)
-            }
-        }
-        
-        initialLoad()
-            
-    },[])
+const Comments = ({ comments }) => {
     
-    return comments.map((comentario)=> {
+    return comments.map((comment)=> {
             return(
-                <li key={comentario._id}>
-                    <Link to={`/profile/${comentario.usuario.username}`}>
-                        {<b>{comentario.usuario.username}</b>}
+                <li key={comment._id}>
+                    <Link to={`/profile/${comment.usuario.username}`}>
+                        {<b>{comment.usuario.username}</b>}
                     </Link>{' '}
-                    { comentario.mensaje }
+                    { comment.mensaje }
                 </li>
             )
     })

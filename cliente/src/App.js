@@ -14,7 +14,7 @@ import Feed from './views/feed'
 import Upload from './views/upload'
 import Explore from './views/explore'
 import PostView from './views/postView'
-// import MyPostView from './views/myPostView'
+//import MyPostView from './views/myPostView'
 
 initAxiosInterceptors()
 
