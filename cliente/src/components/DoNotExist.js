@@ -8,7 +8,7 @@ const DoNotExist = ({ message }) => {
             <div>
                 <h2 className="RecuersoNoExiste__mensaje">{message}</h2>
                 <p className="RecuersoNoExiste-link-container">
-                    Go to <Link to="/">home</Link>
+                    Go to <Link to="/">Feed</Link>
                 </p>
             </div>
         </Main>

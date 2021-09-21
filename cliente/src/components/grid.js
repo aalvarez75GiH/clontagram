@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import PostItem from './postItem'
 
 const Grid = ({ posts }) => {
@@ -29,7 +28,6 @@ return (
                     className="Grid__row">
                         {
                             column.map((post) => (
-                                //<PostGrid key={post._id} {...post }/>
                                 <PostItem key={post._id} { ...post }/>
                             ))
                         }

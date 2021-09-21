@@ -7,7 +7,7 @@ const Avatar = ({ user }) => {
         <div className="Avatar">
             <ImageAvatar user={ user }/>
             {/* <AvatarImage user={ user }/> */}
-            <Link to={`/perfil/${user.username}`}><h2>{user.username}</h2></Link>
+            <Link to={`/profile/${user.username}`}><h2>{user.username}</h2></Link>
         </div>
     )
 }

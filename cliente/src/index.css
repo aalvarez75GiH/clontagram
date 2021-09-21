@@ -402,6 +402,8 @@ body {
   object-fit: contain;
   display: none;
 }
+
+
 @media (min-width: 768px) {
   .Signup__img {
     display: block;
@@ -662,6 +664,34 @@ body {
   margin-top: 0.5rem;
   text-decoration: none;
 }
+
+/* ******************************************************** */
+.postContainer {
+  display: block;
+  height: 100%;
+  max-width: 98%;
+
+}
+.postContainer-img {
+  display: block; 
+  height: 100%; 
+  width: 100%;
+  object-fit: fill;
+}
+
+  .myContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(285px,1fr));
+  width: 100vw;
+  height: auto;
+  max-width: 1230px;
+  margin-left:auto;
+  margin-right: auto;
+  flex-grow: 1;
+}
+
+/* ************************************************************ */
+
 .Grid__row {
   display: -webkit-flex;
   display: flex;

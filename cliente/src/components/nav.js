@@ -1,6 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import { faCameraRetro } from '@fortawesome/free-solid-svg-icons'
+import { faCameraRetro  } from '@fortawesome/free-solid-svg-icons'
+import { faCompass, faUser } from '@fortawesome/free-regular-svg-icons'
 import { Link } from 'react-router-dom'
 
 const Nav = ({ user }) => {
@@ -13,14 +14,14 @@ const Nav = ({ user }) => {
                     Clontagram
                 </Link>
             </li>
-            { user && <LoginRoutes /> }
+            { user && <LoginRoutes user={ user } /> }
         </ul>
     </nav>
     
 )
 }
 
-const LoginRoutes = () => {
+const LoginRoutes = ({user}) => {
     return (
         <React.Fragment>
             <li className="Nav__link-push">
@@ -29,6 +30,17 @@ const LoginRoutes = () => {
                 </Link>
             
             </li>
+            <li className="Nav__link-margin-left">
+                <Link to="/explore" className="Nav__link">
+                    <FontAwesomeIcon className="Nav__icon" icon={faCompass}/>
+                </Link>
+            </li>
+            <li className="Nav__link-margin-left">
+                <Link to={`/profile/${user.username}`} className="Nav__link">
+                    <FontAwesomeIcon className="Nav__icon" icon={faUser}/>
+                </Link>
+            </li>
+
         </React.Fragment>
     )
 }

@@ -14,7 +14,7 @@ import Feed from './views/feed'
 import Upload from './views/upload'
 import Explore from './views/explore'
 import PostView from './views/postView'
-//import MyPostView from './views/myPostView'
+import Profile from './views/profile'
 
 initAxiosInterceptors()
 
@@ -59,12 +59,16 @@ const signUp = async (user) => {
   setUser(data.usuario)
   setToken(data.token)
 } 
-console.log(user)
- 
-// const logOut = () => {
-//     setUser(null)
-//     deleteToken()
-// }
+//console.log(user)
+ const deleteToken = () => {
+   localStorage.removeItem('CLONTAGRAM_TOKEN')
+ }
+
+const onHandleLogout = () => {
+  console.log('i am onHandle...')
+  localStorage.removeItem('CLONTGRAM_TOKEN')
+  setUser(null)
+}
 
 const showError = (message) => {
   setError(message)
@@ -88,14 +92,20 @@ return (
     <React.Fragment>
         <Nav user={ user } />
         <Error message={error} hideError={hideError}/>
-        { user ? <LoginRoutes showError={showError} user={ user }/> : <LogoutRoutes login={login} signUp={signUp} showError={showError} />}
+        { user ? <LoginRoutes 
+        showError={showError}
+        onHandleLogout={ onHandleLogout } 
+        user={ user }/> : <LogoutRoutes 
+        login={login} signUp={signUp} 
+        showError={showError} 
+        />}
     </React.Fragment>
   </Router>
 )
 
 }
 
-const LoginRoutes = ({showError, user}) => {
+const LoginRoutes = ({showError, user, onHandleLogout}) => {
   return (    
       <Switch>
         <Route 
@@ -105,6 +115,10 @@ const LoginRoutes = ({showError, user}) => {
         <Route 
         path="/explore" 
         render={ props => <Explore { ...props } showError={ showError }/>}/>
+        
+        <Route 
+        path="/profile/:username" 
+        render={ props => <Profile { ...props } showError={ showError } user={ user } onHandleLogout={ onHandleLogout } />}/>
         
         <Route 
         path="/post/:id" 
