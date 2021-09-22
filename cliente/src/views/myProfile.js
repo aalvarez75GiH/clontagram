@@ -4,7 +4,7 @@ import axios from 'axios'
 import Grid from '../components/grid'
 import Loading from '../components/loading'
 import DoNotExist from '../components/DoNotExist'
-import AvatarImage from '../components/avatarImage'
+import MyAvatarImage from '../components/myAvatarImage'
 
 
 
@@ -18,7 +18,9 @@ const MyProfile = ({ match, user, onHandleLogout, showError }) => {
     const [ loadingProfile, setLoadingProfile ] = useState(false)
     const [ posts, setPosts ] = useState([])
     const [profileNotExist, setProfileNotExist] = useState(false)
-    const [ loadingImage, setLoadingImage ] = useState(false) 
+    const [ loadingImage, setLoadingImage ] = useState(false)
+    const [ imageUrl, setImageUrl ] = useState('')
+
 
     useEffect(() => {
         
@@ -27,21 +29,39 @@ const MyProfile = ({ match, user, onHandleLogout, showError }) => {
             const { data: user } = await axios.get(`/api/usuarios/${path}`)
             const { data: posts } = await axios.get(`/api/posts/usuario/${user._id}`)
             setProfileOwner(user)
+            setImageUrl(user.imagen)
             setPosts(posts)
         }
         initialDataLoad()
     },[])
-    console.log(profileOwner)
-    console.log(posts)
-    console.log(user)
+    // console.log(profileOwner)
+    // console.log(posts)
+    // console.log(user)
     
 
     const switchingNavBars = () => {
         return profileOwner._id === user._id 
     }
 
-    const handleSelectedImage = () => {
-        console.log('testing images')
+    const handleSelectedImage = async(e) => {
+        e.preventDefault()
+        try {
+            setLoadingImage(true)
+            const file = e.target.files[0]
+            const config = {
+                headers:{
+                    'Content-Type': file.type
+                }
+            }
+            const { data } = await axios.post(`/api/usuarios/upload`, file, config)
+            console.log(data)
+            setImageUrl(data.url)
+            // setProfileOwner({ ...profileOwner, imagen: data.url })
+            setLoadingImage(false)
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     if (profileNotExist){
@@ -70,11 +90,12 @@ const MyProfile = ({ match, user, onHandleLogout, showError }) => {
         return (
             <Main center>
                 <div className="Perfil">
-                    <AvatarImage
+                    <MyAvatarImage
                     switchingNavBars={switchingNavBars}
                     profileOwner={ profileOwner }
-                    handleSelectedImage={ handleSelectedImage }
+                    handleSelectedImage={(e)=> handleSelectedImage(e) }
                     loadingImage={loadingImage}
+                    imageUrl={imageUrl}
                     />
                     <div className="Perfil__bio-container">
                         <div className="Perfil__bio-heading">
@@ -96,12 +117,10 @@ const MyProfile = ({ match, user, onHandleLogout, showError }) => {
                     </div>
                 </div>
                 
-                
-                <div className="Explore__section">
-                    <h2 className="Explore__title">My Posts</h2>
-                    <Grid posts={posts}/>                
-                </div>
-
+                <div className="Perfil__separador"/>
+                {/* <h2 className="Explore__title">My Posts</h2> */}
+                {/* { posts.length > 0 ? <Grid posts={posts}/> }                     */}
+                { posts.length > 0 ? <Grid posts={posts}/> : <NoPostsAvailable/> }
             </Main>
             
         )
@@ -114,7 +133,10 @@ const MyProfile = ({ match, user, onHandleLogout, showError }) => {
         
     )
     
-    
+  
+}
+const NoPostsAvailable = () => {
+    return <p className="text-center">This user hasn't posted any picture yet...</p>
 }
 
 export default MyProfile

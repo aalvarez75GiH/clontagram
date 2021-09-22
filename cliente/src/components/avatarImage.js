@@ -3,7 +3,6 @@ import Loading from './loading'
 import stringToColor from 'string-to-color'
 
 const AvatarImage = ({
-    switchingNavBars,
     profileOwner,
     handleSelectedImage,
     loadingImage

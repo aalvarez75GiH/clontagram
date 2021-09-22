@@ -44,6 +44,8 @@ export const addingComment = async(post, comment, user) => {
     return postChanged
 }
 
+
+
 // export const addingCommentFeed = async(post, comment, user) => {
 //     const url_comment = `/api/posts/${post._id}/comentarios`
 //     const { data: nuevoComentario } = await axios.post(url_comment, {

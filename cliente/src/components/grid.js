@@ -15,9 +15,9 @@ const columns = posts.reduce((columns, post) => {
     
 },[])
 
-console.log('List of Posts:', posts)
-console.log('Columns:', columns)
-console.log('Number of columns:', columns.length)
+// console.log('List of Posts:', posts)
+// console.log('Columns:', columns)
+// console.log('Number of columns:', columns.length)
 return (
     <div>
         {

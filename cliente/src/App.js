@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import Nav from './components/nav'
 import axios from 'axios'
 
-import { setToken, getToken, initAxiosInterceptors } from './helpers/auth-helpers'
+import { setToken, getToken, deleteToken, initAxiosInterceptors } from './helpers/auth-helpers'
+import Nav from './components/nav'
 import Loading from './components/loading'
 import Main from './components/main'
 import Error from './components/error'
@@ -59,14 +59,8 @@ const signUp = async (user) => {
   setUser(data.usuario)
   setToken(data.token)
 } 
-//console.log(user)
- const deleteToken = () => {
-   localStorage.removeItem('CLONTAGRAM_TOKEN')
- }
-
 const onHandleLogout = () => {
-  console.log('i am onHandle...')
-  localStorage.removeItem('CLONTGRAM_TOKEN')
+  deleteToken()  
   setUser(null)
 }
 

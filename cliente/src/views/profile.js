@@ -5,8 +5,11 @@ import Grid from '../components/grid'
 import Loading from '../components/loading'
 import DoNotExist from '../components/DoNotExist'
 import AvatarImage from '../components/avatarImage'
-
-
+import FollowButton from '../components/followButton'
+import LogOutButton from '../components/logOutButton'
+import DescriptionProfile from '../components/descriptionProfile'
+import { toggleFriendship } from '../helpers/friendship-helpers'
+import useEsMobil from '../hooks/useEsMobil'
 
 const Profile = ({ match, user, onHandleLogout, showError }) => {
     
@@ -17,6 +20,8 @@ const Profile = ({ match, user, onHandleLogout, showError }) => {
     const [ posts, setPosts ] = useState([])
     const [profileNotExist, setProfileNotExist] = useState(false)
     const [ loadingImage, setLoadingImage ] = useState(false) 
+    const [ togglingFriendship, setTogglingFriendship ] = useState(false)
+    const esMobil = useEsMobil()
 
     useEffect(()=> {
         const initialDataLoad = async() => {
@@ -28,6 +33,7 @@ const Profile = ({ match, user, onHandleLogout, showError }) => {
                     const { data: posts } = await axios.get(`/api/posts/usuario/${user._id}`)
     
                     setProfileOwner(user)
+                    console.log(user)
                     setPosts(posts)
                     setLoadingProfile(false)
                     
@@ -49,14 +55,51 @@ const Profile = ({ match, user, onHandleLogout, showError }) => {
         
     },[path])
 
-    const switchingNavBars = ({}) => {
+    const validatingUserOwnership = () => {
         return profileOwner._id === user._id 
         
     }
 
-const handleSelectedImage = () => {
-    console.log('testing images')
-}
+    const handleSelectedImage = async(e) => {
+
+        try {
+            setLoadingImage(true)
+            const file = e.target.files[0]
+            const config = {
+                headers:{
+                    'Content-Type': file.type
+                }
+            }
+            const { data } = await axios.post(`/api/usuarios/upload`, file, config)
+            setProfileOwner({ ...profileOwner, imagen: data.url})
+            setLoadingImage(false)
+
+        } catch (error) {
+            showError(error.reponse.data)
+            setLoadingImage(false)
+            console.log(error)
+        }
+    }
+
+
+
+    const handlingFriendship = async() => {
+        if (togglingFriendship){
+            return
+        }    
+        try {
+            setTogglingFriendship(true)
+            const updatedUser = await toggleFriendship(profileOwner)
+            setProfileOwner(updatedUser)
+            setTogglingFriendship(false)
+        } catch (error) {
+            showError('We could not manage your following request...')
+            setTogglingFriendship(false)
+            console.log(error)
+        }
+        
+    }
+
 
     if (profileNotExist){
         return (
@@ -83,45 +126,42 @@ const handleSelectedImage = () => {
         <Main center>
                 <div className="Perfil">
                     <AvatarImage
-                    switchingNavBars={switchingNavBars}
                     profileOwner={ profileOwner }
                     handleSelectedImage={ handleSelectedImage }
                     loadingImage={loadingImage}
                     />
                     <div className="Perfil__bio-container">
                         <div className="Perfil__bio-heading">
-                            <h2 className="capitalize">{user.username}</h2>
-                            <button
-                            onClick={onHandleLogout} 
-                            className="Perfil__boton-logout">Log out</button>
+                            <h2 className="capitalize">{profileOwner.username}</h2>
+                            { !validatingUserOwnership() && (
+                                <FollowButton
+                                following={profileOwner.siguiendo}
+                                handlingFriendship={ handlingFriendship }
+                            />)}
+                            { validatingUserOwnership() && <LogOutButton logOut={onHandleLogout}/>}  
                         </div>
-                        <div className="Perfil__descripcion">
-                            <h2 className="Perfil__nombre">{user.nombre}</h2>
-                            <p>{user.username}</p>
-                            <p className="Perfil__estadisticas">
-                                <b>{user.numSiguiendo}</b>      fallowing
-                                    <span className="ml-4">
-                                        <b>{user.numSeguidores}</b>     fallowers
-                                    </span>
-                            </p>
-                        </div>
+                        { !esMobil && (
+                            <DescriptionProfile profileOwner={ profileOwner }/>
+                        )}
+                       
                     </div>
                 </div>
-
-
-
-            {/* <AvatarImage
-            switchingNavBars={switchingNavBars}
-            profileOwner={ profileOwner }
-            handleSelectedImage={ handleSelectedImage }
-            loadingImage={loadingImage}
-            />
-            <h1>This is profile </h1> */}
+                { esMobil && (
+                    <DescriptionProfile profileOwner={ profileOwner }/>
+                )}
+                <div className="Perfil__separador"/>
+                <h2 className="Explore__title">My Posts</h2>
+                { posts.length > 0 ? <Grid posts={posts}/> : <NoPostsAvailable />}
         </Main>
         
     )
     
     
+}
+
+
+const NoPostsAvailable = () => {
+    return <p className="text-center">This user hasn't posted any picture yet...</p>
 }
 
 export default Profile

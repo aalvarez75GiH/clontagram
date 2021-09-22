@@ -42,7 +42,6 @@ const Post = ({ post, updatePost, showError, user }) => {
 
 
     const onSubmitComment = async(comment) => {
-        console.log(comment) 
         const updatedPost = await addingComment(post, comment, user)
         updatePost(post, updatedPost)
     }
