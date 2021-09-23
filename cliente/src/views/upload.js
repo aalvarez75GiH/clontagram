@@ -32,10 +32,7 @@ const Upload = ({ history, showError }) => {
                 setImageUrl(data.url)
                 setLoadingImage(false)
             },2000)
-            
-            
-            
-            
+             
         } catch (error) {
             setLoadingImage(false)
             showError(error.response.data)

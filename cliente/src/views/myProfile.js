@@ -115,12 +115,9 @@ const MyProfile = ({ match, user, onHandleLogout, showError }) => {
                             </p>
                         </div>
                     </div>
-                </div>
-                
+                </div>    
                 <div className="Perfil__separador"/>
-                {/* <h2 className="Explore__title">My Posts</h2> */}
-                {/* { posts.length > 0 ? <Grid posts={posts}/> }                     */}
-                { posts.length > 0 ? <Grid posts={posts}/> : <NoPostsAvailable/> }
+            { posts.length > 0 ? <Grid posts={posts}/> : <NoPostsAvailable/> }
             </Main>
             
         )
